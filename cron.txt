@@ -1,0 +1,25 @@
+dms===================================================------------------------------------
+depok
+
+
+daily new record
+
+insert into daily_h select * from daily;
+delete from daily;
+
+insert into daily (host,ip,checkdt) select hostid,ip,date(now()) from hosts;
+update daily set ping=0,log1=0,log2=0,log3=0;
+
+
+evry daily updated
+update daily set ip=(select max(ip) from hosts where hosts.hostid=daily.host);
+insert into daily (host,ip,checkdt) select hostid,ip,date(now()) from hosts where hostid not in (select host from daily);
+update daily set ping=0,log1=0,log2=0,log3=0 where ping is null;
+
+eksekusi ping+log
+
+update propinsi set tot=(select count(*) from hosts where hosts.group4=propinsi.prop),
+ok=(select count(*) from hosts join daily on hosts.hostid=daily.host 
+where hosts.group4=propinsi.prop and (daily.ping+daily.log1+daily.log2+daily.log3>0));
+
+
