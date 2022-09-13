@@ -1,0 +1,2 @@
+update daily set log1=ping, log2=ping2;
+
